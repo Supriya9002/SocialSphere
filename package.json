@@ -1,0 +1,25 @@
+{
+  "name": "socialmediaapp",
+  "version": "1.0.0",
+  "description": "Devlope Social Media Application Backend REST-API that improve users to post, comment, like, send friends requests and rset their passwords using OTP for enhanced Security",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Supriya Haldar",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.1.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.9",
+    "path": "^0.12.7",
+    "uuid": "^9.0.1"
+  }
+}
