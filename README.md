@@ -56,6 +56,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 Node.js, Express.js, and MongoDB used in the project.
 
 ## Author
-Supriya Haldar
-GitHub: https://github.com/Supriya9002/SocialSphere
+ Supriya Haldar
+ GitHub: https://github.com/Supriya9002/SocialSphere
    
