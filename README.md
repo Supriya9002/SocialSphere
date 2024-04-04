@@ -22,3 +22,7 @@ routes/: Defines routes for different API endpoints.
 middlewares/: Contains middleware functions for authentication, error handling, and logging.
 
 config/: Includes configuration files for MongoDB connection and other settings.
+## Usage
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/social-media-backend
