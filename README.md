@@ -40,7 +40,7 @@ Authentication Routes
 - **/api/users/signin:** Log in as a user.
 - **/api/users/logout:** Log out the currently logged-in user.
 - **/api/users/logout-all-devices:** Log out the user from all devices.
-(Include other routes for user profile, post, comment, like, friendship, and OTP functionality as per the provided API structure)
+
 
 ## Testing
 Thoroughly test the API to ensure it meets the acceptance criteria. Unit tests, integration tests, and end-to-end tests can be implemented using testing frameworks like Jest, Mocha, or Supertest.
