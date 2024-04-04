@@ -33,7 +33,7 @@ config/: Includes configuration files for MongoDB connection and other settings.
    ```bash
    npm start
 
-API Structure
+## API Structure
 Authentication Routes
 /api/users/signup: Register a new user account.
 /api/users/signin: Log in as a user.
@@ -41,18 +41,18 @@ Authentication Routes
 /api/users/logout-all-devices: Log out the user from all devices.
 (Include other routes for user profile, post, comment, like, friendship, and OTP functionality as per the provided API structure)
 
-Testing
+## Testing
 Thoroughly test the API to ensure it meets the acceptance criteria. Unit tests, integration tests, and end-to-end tests can be implemented using testing frameworks like Jest, Mocha, or Supertest.
 
-Documentation
+## Documentation
 Document the application's functionalities, dependencies, API endpoints, and code organization for clarity. Use tools like Swagger or Postman for API documentation.
 
-License
+## License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-Acknowledgements
+## Acknowledgements
 Mention any acknowledgements or credits for libraries, frameworks, or resources used in the project.
-Author
-Your Name
-GitHub: Your GitHub Profile
+## Author
+Supriya Haldar
+GitHub: https://github.com/Supriya9002/SocialSphere
    
