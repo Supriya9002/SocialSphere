@@ -13,15 +13,16 @@ Error Handling and Logging: Implements error handling middleware and request log
 ## Project Structure
 server.js: Contains the server-side logic, setting up the Express server, routing, and MongoDB connection. Handles user authentication, post management, comment system, like functionality, friendship features, OTP-based password reset, error handling, and logging.
 
-controllers/: Contains controller functions for handling various API endpoints.
+- **controllers/:** Contains controller functions for handling various API endpoints.
 
-models/: Defines MongoDB schemas for user, post, comment, like, friendship, and OTP.
+- **models/:** Defines MongoDB schemas for user, post, comment, like, friendship, and OTP.
 
-routes/: Defines routes for different API endpoints.
+- **routes/:** Defines routes for different API endpoints.
 
-middlewares/: Contains middleware functions for authentication, error handling, and logging.
+- **middlewares/:** Contains middleware functions for authentication, error handling, and logging.
 
-config/: Includes configuration files for MongoDB connection and other settings.
+- **config/:** Includes configuration files for MongoDB connection and other settings.
+- 
 ## Usage
 1. Clone the repository:
    ```bash
@@ -53,6 +54,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgements
 Mention any acknowledgements or credits for libraries, frameworks, or resources used in the project.
+
 ## Author
 Supriya Haldar
 GitHub: https://github.com/Supriya9002/SocialSphere
