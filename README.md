@@ -1,5 +1,5 @@
-# Social Media Backend REST-API
-This project is a robust social media backend REST-API developed using Node.js, Express.js, and MongoDB. It empowers users to perform various social media actions such as posting, commenting, liking, sending friend requests, and resetting passwords using OTP for enhanced security.
+# SocialSphere
+This project is a robust SocialSphere developed using Node.js, Express.js, and MongoDB. It empowers users to perform various social media actions such as posting, commenting, liking, sending friend requests, and resetting passwords using OTP for enhanced security.
 
 ## Features
 RESTful Architecture: Utilizes Express.js for efficient routing control and handling HTTP requests.
@@ -47,13 +47,13 @@ Thoroughly test the API to ensure it meets the acceptance criteria. Unit tests, 
 
 ## Documentation
 Document the application's functionalities, dependencies, API endpoints, and code organization for clarity. Use tools Postman for API documentation.
-- **Link To Postman-** https://www.postman.com/mission-participant-11895744/workspace/social-media-api/collection/28528017-a6cf0957-20a4-41f0-bb7d-7318d19b25e3?action=share&creator=28528017
+- **Link To Postman (For Test This APIs)-** https://www.postman.com/mission-participant-11895744/workspace/social-media-api/collection/28528017-a6cf0957-20a4-41f0-bb7d-7318d19b25e3?action=share&creator=28528017
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgements
-Mention any acknowledgements or credits for libraries, frameworks, or resources used in the project.
+Node.js, Express.js, and MongoDB used in the project.
 
 ## Author
 Supriya Haldar
