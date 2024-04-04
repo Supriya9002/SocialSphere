@@ -35,17 +35,18 @@ config/: Includes configuration files for MongoDB connection and other settings.
 
 ## API Structure
 Authentication Routes
-/api/users/signup: Register a new user account.
-/api/users/signin: Log in as a user.
-/api/users/logout: Log out the currently logged-in user.
-/api/users/logout-all-devices: Log out the user from all devices.
+- **/api/users/signup:** Register a new user account.
+- **/api/users/signin:** Log in as a user.
+- **/api/users/logout:** Log out the currently logged-in user.
+- **/api/users/logout-all-devices:** Log out the user from all devices.
 (Include other routes for user profile, post, comment, like, friendship, and OTP functionality as per the provided API structure)
 
 ## Testing
 Thoroughly test the API to ensure it meets the acceptance criteria. Unit tests, integration tests, and end-to-end tests can be implemented using testing frameworks like Jest, Mocha, or Supertest.
 
 ## Documentation
-Document the application's functionalities, dependencies, API endpoints, and code organization for clarity. Use tools like Swagger or Postman for API documentation.
+Document the application's functionalities, dependencies, API endpoints, and code organization for clarity. Use tools Postman for API documentation.
+- **Link To Postman-** https://www.postman.com/mission-participant-11895744/workspace/social-media-api/collection/28528017-a6cf0957-20a4-41f0-bb7d-7318d19b25e3?action=share&creator=28528017
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
