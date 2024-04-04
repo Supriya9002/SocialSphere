@@ -50,7 +50,7 @@ Document the application's functionalities, dependencies, API endpoints, and cod
 - **Link To Postman (For Test This APIs)-** https://www.postman.com/mission-participant-11895744/workspace/social-media-api/collection/28528017-a6cf0957-20a4-41f0-bb7d-7318d19b25e3?action=share&creator=28528017
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+
 
 ## Acknowledgements
 Node.js, Express.js, and MongoDB used in the project.
