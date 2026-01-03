@@ -6,10 +6,7 @@ const url = process.env.DB_URL;
 //const url = "mongodb://localhost:27017/SocialMediaApp"
 const connectUsingMongoose = async()=>{
     try{
-        await mongoose.connect(url, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+        await mongoose.connect(url);
         console.log("Mongodb connected using mongoose");
         //addCategory();
     }catch(err){

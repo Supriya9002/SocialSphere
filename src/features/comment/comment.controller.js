@@ -22,7 +22,8 @@ export default class CommentController{
     //get comment for specific post
     async get_Specific_Comment(req, res){
         try{
-            const getComment = await this.commentRepository.get_comment(req.params.postId);
+            const { page, limit } = req.query;
+            const getComment = await this.commentRepository.get_comment(req.params.postId, { page, limit });
             res.status(200).send(getComment)
         }catch(err){
             console.log(err);

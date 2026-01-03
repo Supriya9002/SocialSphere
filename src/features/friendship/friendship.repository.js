@@ -8,9 +8,12 @@ const friendshipModel = mongoose.model("friend", FriendShipSchema)
 export default class FriendShipRepository{
 
     //get user friends
-    async getFriends(userID){
+    async getFriends(userID, { page = 1, limit = 10 } = {}){
         try{
-            return await friendshipModel.find({userId: userID, status: "accepted"}) //.populate("friendId");
+            const skip = (page - 1) * limit;
+            return await friendshipModel.find({userId: userID, status: "accepted"})
+                .skip(skip)
+                .limit(parseInt(limit)); //.populate("friendId");
         }catch(err){
             console.log(err)
             throw new ApplicationError("server error! Try later!!", 500)

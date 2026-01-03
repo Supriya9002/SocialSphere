@@ -18,7 +18,9 @@ const jwtAuth = (req, res, next)=>{
     }
     // 3. check if token is valid.
     try{
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        // 3.1. Clean the token if it comes with "Bearer " prefix
+        const cleanToken = token.replace("Bearer ", "");
+        const payload = jwt.verify(cleanToken, process.env.JWT_SECRET);
         // Check if the user associated with the token exists
         // Note: For Access Tokens, we don't necessarily check the DB for the token existence if we want statelessness.
         // However, if we want to support immediate revocation, we would.

@@ -18,11 +18,11 @@ Protected routes require a JWT token.
 | Method | Endpoint | Description | Auth Required | Request Body / Params |
 | :--- | :--- | :--- | :--- | :--- |
 | `POST` | `/signup` | Register a new user | No | JSON: `{ "name": "...", "email": "...", "password": "...", "gender": "..." }` |
-| `POST` | `/signin` | Log in user | No | JSON: `{ "email": "...", "password": "..." }` <br> **Response**: `{ "accessToken": "...", "refreshToken": "..." }` |
-| `POST` | `/refresh-token` | Refresh Access Token | No | JSON: `{ "refreshToken": "..." }` <br> **Response**: `{ "accessToken": "..." }` |
+| `POST` | `/signin` | Log in user | No | JSON: `{ "email": "...", "password": "..." }` <br> **Response**: `{ "accessToken": "..." }` <br> **Cookie**: `refreshToken` (HttpOnly) |
+| `POST` | `/refresh-token` | Refresh Access Token | No | **Cookie**: `refreshToken` (or JSON body) <br> **Response**: `{ "accessToken": "..." }` |
 | `PUT` | `/update-details/:userId` | Update user profile | Yes | **FormData**: `avatar` (File), fields like `name`, `gender` etc. |
 | `GET` | `/get-details/:userId` | Get user details by ID | Yes | Param: `userId` |
-| `GET` | `/get-all-details` | Get all users | Yes | - |
+| `GET` | `/get-all-details` | Get all users | Yes | Query: `page`, `limit`, `search` (name/email), `sort`, `gender` |
 | `POST` | `/logout` | Logout current session | Yes | JSON: `{ "refreshToken": "..." }` |
 | `GET` | `/logout-all-devices` | Logout from all devices | Yes | - |
 
@@ -31,7 +31,7 @@ Protected routes require a JWT token.
 
 | Method | Endpoint | Description | Auth Required | Request Body / Params |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/all` | Get all posts (feed) | Yes | - |
+| `GET` | `/all` | Get all posts (feed) | Yes | Query: `page`, `limit`, `search` (caption), `sort` |
 | `GET` | `/` | Get logged-in user's posts | Yes | - |
 | `GET` | `/:postId` | Get a specific post | Yes | Param: `postId` |
 | `POST` | `/` | Create a new post | Yes | **FormData**: `imageUrl` (File), `caption` (Text) |
@@ -44,7 +44,7 @@ Protected routes require a JWT token.
 | Method | Endpoint | Description | Auth Required | Request Body / Params |
 | :--- | :--- | :--- | :--- | :--- |
 | `POST` | `/:postId` | Add a comment | Yes | JSON: `{ "content": "..." }` |
-| `GET` | `/:postId` | Get comments for a post | Yes | Param: `postId` |
+| `GET` | `/:postId` | Get comments for a post | Yes | Param: `postId`, Query: `page`, `limit` |
 | `PUT` | `/:commentId` | Update a comment | Yes | JSON: `{ "content": "..." }` |
 | `DELETE` | `/:commentId` | Delete a comment | Yes | Param: `commentId` |
 
@@ -61,7 +61,7 @@ Protected routes require a JWT token.
 
 | Method | Endpoint | Description | Auth Required | Request Body / Params |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/get-friends/:userId` | Get user's friends | Yes | Param: `userId` |
+| `GET` | `/get-friends/:userId` | Get user's friends | Yes | Param: `userId`, Query: `page`, `limit` |
 | `GET` | `/get-pending-requests` | Get pending requests | Yes | - |
 | `GET` | `/toggle-friendship/:friendId` | Send/Remove friend request | Yes | Param: `friendId` |
 | `GET` | `/response-to-request/:friendId` | Respond to request | Yes | Param: `friendId` |
@@ -73,3 +73,10 @@ Protected routes require a JWT token.
 | :--- | :--- | :--- | :--- | :--- |
 | `POST` | `/send` | Send OTP for password reset | Yes | JSON: `{ "email": "..." }` |
 | `POST` | `/verify` | Verify OTP and reset password | Yes | JSON: `{ "email": "...", "otp": "...", "newPassword": "..." }` |
+
+### 7. Search
+**Base Path:** `/api/search`
+
+| Method | Endpoint | Description | Auth Required | Request Body / Params |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/` | Global search (Users & Posts) | Yes | Query: `search` (required) |

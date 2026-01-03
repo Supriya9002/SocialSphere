@@ -11,7 +11,9 @@ import commentRouter from "./src/features/comment/comment.routes.js"
 import likeRouter from "./src/features/like/like.routes.js"
 import friendshipRouter from "./src/features/friendship/friendship.routes.js"
 import OtpRouter from "./src/features/otp/otp.routes.js"
+import searchRouter from "./src/features/search/search.routes.js"
 import loggerMiddleware from "./src/middleware/logger.middleware.js"
+import cookieParser from "cookie-parser";
 
 
 //server
@@ -19,6 +21,7 @@ const server = express();
 
 //all middleware
 server.use(bodyParser.json());
+server.use(cookieParser());
 server.use(express.static(path.resolve("public")));
 server.use(loggerMiddleware)
 
@@ -29,6 +32,7 @@ server.use("/api/comments",jwtAuth ,commentRouter)
 server.use("/api/likes", jwtAuth, likeRouter)
 server.use("/api/friends", jwtAuth, friendshipRouter)
 server.use("/api/otp",jwtAuth, OtpRouter)
+server.use("/api/search", jwtAuth, searchRouter)
 
 //all API
 server.get("/", (req, res)=>{

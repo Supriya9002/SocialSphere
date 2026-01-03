@@ -39,9 +39,28 @@ export default class PostRepository{
     }
 
     // all user see Posts (can see all others posts)
-    async get_AllPost(){
+    async get_AllPost({ page = 1, limit = 10, search, sort } = {}){
         try{
-            return await PostModel.find();
+            const skip = (page - 1) * limit;
+            const query = {};
+            
+            // Search
+            if (search) {
+                query.caption = { $regex: search, $options: 'i' };
+            }
+
+            // Sort
+            let sortQuery = {};
+            if (sort) {
+                const field = sort.startsWith('-') ? sort.substring(1) : sort;
+                const order = sort.startsWith('-') ? -1 : 1;
+                sortQuery[field] = order;
+            }
+
+            return await PostModel.find(query)
+                .sort(sortQuery)
+                .skip(skip)
+                .limit(parseInt(limit));
         }catch(err){
             console.log(err);
             throw new ApplicationError("server error! Try later!!", 500)

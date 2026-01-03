@@ -59,9 +59,10 @@ export default class PostController{
     // all Users see each other Post, all post show
     async getAllPost(req, res){
         try{
-            console.log("Supriya Haldar")
-            const allPost = await this.postRepository.get_AllPost();
-            console.log(allPost);
+            // console.log("Supriya Haldar")
+            const { page, limit, search, sort } = req.query;
+            const allPost = await this.postRepository.get_AllPost({ page, limit, search, sort });
+            // console.log(allPost);
             res.status(200).send(allPost);
         }catch(err){
             console.log(err);

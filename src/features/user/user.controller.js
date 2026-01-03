@@ -54,9 +54,16 @@ export default class UserController{
                 user.sessions.push(refreshToken);
                 await user.save();
                 
+                // Send refresh token in cookie
+                res.cookie("refreshToken", refreshToken, {
+                    httpOnly: true,
+                    // secure: true, // Uncomment this in production (requires HTTPS)
+                    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+                });
+
                 res.status(201).send({
                     accessToken,
-                    refreshToken
+                    // refreshToken // We generally don't send it in body if using cookies, but can for flexibility
                 });
             }else{
                 res.status(404).send("Password Not Correct");
@@ -69,7 +76,9 @@ export default class UserController{
 
     // Refresh Access Token
     async refreshAccessToken(req, res) {
-        const { refreshToken } = req.body;
+        // Read from cookie first, fallback to body
+        const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+        
         if (!refreshToken) {
             return res.status(401).send("Access Denied. No refresh token provided.");
         }
@@ -99,7 +108,8 @@ export default class UserController{
     async logout(req, res){
         try{
             // For stateless access tokens, we need the refresh token to identify the session to revoke.
-            const { refreshToken } = req.body;
+            const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+            
             // Fallback: If no refresh token provided, we can't remove a specific session if we don't store access tokens.
             // But if the client sends the refresh token, we remove it.
             
@@ -108,6 +118,10 @@ export default class UserController{
             }
 
             const result = await this.userRepostory.logout(req.userID, refreshToken);
+            
+            // Clear the cookie
+            res.clearCookie("refreshToken");
+
             if (result == null) {
                 return res.status(400).send("User already logged out or token not found");
             }
@@ -154,9 +168,10 @@ export default class UserController{
     //get-details all user
     async get_details_All_User(req, res){
         try{
-            const users_details = await this.userRepostory.getDetails_All_User();
-            console.log(users_details);
-            res.status(201).send(users_details)
+            const { page, limit, search, sort, gender } = req.query;
+            const users_details = await this.userRepostory.getDetails_All_User({ page, limit, search, sort, gender });
+            // console.log(users_details);
+            res.status(200).send(users_details)
         }catch(err){
             console.log(err);
             res.status(500).send("Internal Server Error");

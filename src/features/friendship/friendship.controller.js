@@ -12,8 +12,9 @@ export default class FriendShipController{
     async getFriends(req, res){
         try{
             //const userId = req.userID;
-            const friends = await this.friendShipRepository.getFriends(req.params.userId);
-            console.log(req.params.userId, friends)
+            const { page, limit } = req.query;
+            const friends = await this.friendShipRepository.getFriends(req.params.userId, { page, limit });
+            // console.log(req.params.userId, friends)
             res.status(200).send(friends);
         }catch(err){
             console.log(err)

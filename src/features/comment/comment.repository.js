@@ -29,9 +29,13 @@ export default class CommentRepository{
         }
     }
 
-    async get_comment(postID){
+    async get_comment(postID, { page = 1, limit = 10 } = {}){
         try{
-            const comment = await CommentModel.find({postId: postID}).select({content: 1, _id: 0})
+            const skip = (page - 1) * limit;
+            const comment = await CommentModel.find({postId: postID})
+                .select({content: 1, _id: 0})
+                .skip(skip)
+                .limit(parseInt(limit));
             //console.log(comment)
             return comment;
         }catch(err){

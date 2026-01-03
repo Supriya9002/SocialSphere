@@ -70,9 +70,37 @@ export default class UserRepostory{
             throw new ApplicationError("server error! Try later!!", 500)
         }
     }
-    async getDetails_All_User(){
+    async getDetails_All_User({ page = 1, limit = 10, search, sort, gender } = {}){
         try{
-            return await UserModel.find().select({password: 0, date: 0, sessions: 0, _id: 0, __v: 0})
+            const skip = (page - 1) * limit;
+            const query = {};
+            
+            // Search
+            if (search) {
+                query.$or = [
+                    { name: { $regex: search, $options: 'i' } },
+                    { email: { $regex: search, $options: 'i' } }
+                ];
+            }
+            
+            // Filter
+            if (gender) {
+                query.gender = gender;
+            }
+
+            // Sort
+            let sortQuery = {};
+            if (sort) {
+                const field = sort.startsWith('-') ? sort.substring(1) : sort;
+                const order = sort.startsWith('-') ? -1 : 1;
+                sortQuery[field] = order;
+            }
+
+            return await UserModel.find(query)
+                .select({password: 0, date: 0, sessions: 0, __v: 0})
+                .sort(sortQuery)
+                .skip(skip)
+                .limit(parseInt(limit));
         }catch(err){
             console.log(err);
             throw new ApplicationError("server error! Try later!!", 500)
