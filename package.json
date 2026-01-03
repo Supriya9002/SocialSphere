@@ -4,7 +4,8 @@
   "description": "Devlope Social Media Application Backend REST-API that improve users to post, comment, like, send friends requests and rset their passwords using OTP for enhanced Security",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "Supriya Haldar",
   "type": "module",
@@ -21,5 +22,8 @@
     "nodemailer": "^6.9.9",
     "path": "^0.12.7",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
   }
 }
