@@ -1,62 +1,116 @@
-# SocialSphere
-This project is a robust SocialSphere developed using Node.js, Express.js, and MongoDB. It empowers users to perform various social media actions such as posting, commenting, liking, sending friend requests, and resetting passwords using OTP for enhanced security.
+# SocialSphere API
 
-## Features
-RESTful Architecture: Utilizes Express.js for efficient routing control and handling HTTP requests.
-User Authentication: Implements signup, login, logout, and logout from all devices functionalities. Provides extra security by storing login tokens and supports advanced features like updating user profiles.
-Post Management: Supports CRUD operations for posts with fields like caption and image URL. Ensures each post references the user who created it.
-Comment System: Allows users to add, update, and delete comments on posts. Comments can be managed by the post owner or the commenter.
-Like Functionality: Provides like system for posts with logic implemented using MongoDB. Displays counts of likes and comments on posts.
-Friendship Features: Implements friendship system with features like getting user friends, managing pending friend requests, and accepting/rejecting friend requests.
-OTP-Based Password Reset: Includes OTP-based password reset feature for enhanced security.
-Error Handling and Logging: Implements error handling middleware and request logging for improved debugging and monitoring.
-## Project Structure
-server.js: Contains the server-side logic, setting up the Express server, routing, and MongoDB connection. Handles user authentication, post management, comment system, like functionality, friendship features, OTP-based password reset, error handling, and logging.
+SocialSphere is a robust Social Media REST API built with Node.js, Express.js, and MongoDB. It provides a complete backend solution for a social networking platform, featuring secure authentication, post management, social interactions (likes, comments, friends), and advanced query capabilities.
 
-- **controllers/:** Contains controller functions for handling various API endpoints.
+## 🚀 Features
 
-- **models/:** Defines MongoDB schemas for user, post, comment, like, friendship, and OTP.
+### Core Functionality
+- **User Authentication**: Secure Signup/Signin with JWT (Access & Refresh Tokens), Logout, and Logout All Devices.
+- **Security**: 
+  - Dual-token authentication system (Short-lived Access Token, Long-lived Refresh Token).
+  - Password hashing.
+  - OTP-based password reset.
+- **User Profile**: Update details, upload avatar images.
+- **Posts**: Create, Read, Update, Delete posts with image uploads.
+- **Social Interactions**: 
+  - **Comments**: Add, update, delete comments on posts.
+  - **Likes**: Toggle likes on posts.
+  - **Friendship**: Send requests, accept/reject, view friends and pending requests.
 
-- **routes/:** Defines routes for different API endpoints.
+### Advanced Features
+- **Global Search**: Search across Users and Posts simultaneously.
+- **Advanced Querying**: 
+  - **Pagination**: Efficiently load large datasets.
+  - **Filtering**: Filter users by specific attributes (e.g., gender).
+  - **Sorting**: Sort results by various fields.
+  - **Search**: Targeted search within specific resources (Users, Posts).
 
-- **middlewares/:** Contains middleware functions for authentication, error handling, and logging.
+## 🛠️ Tech Stack
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: MongoDB (Mongoose ODM)
+- **Authentication**: JSON Web Tokens (JWT)
+- **File Handling**: Multer (for image uploads)
+- **Email Service**: Nodemailer (for OTPs)
+- **Logging**: Winston / Custom Logger
 
-- **config/:** Includes configuration files for MongoDB connection and other settings.
-- 
-## Usage
-1. Clone the repository:
+## 📂 Project Structure
+The project follows a feature-based modular architecture:
+
+```
+src/
+├── config/         # Database and app configuration
+├── features/       # Feature-based modules
+│   ├── user/       # User controller, repository, routes, schema
+│   ├── post/       # Post controller, repository, routes, schema
+│   ├── comment/    # Comment controller, repository, routes, schema
+│   ├── like/       # Like controller, repository, routes, schema
+│   ├── friendship/ # Friendship controller, repository, routes, schema
+│   ├── otp/        # OTP controller, repository, routes, schema
+│   └── search/     # Global search functionality
+├── middleware/     # Custom middlewares (JWT, Logger, FileUpload)
+└── error/          # Error handling classes
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js installed
+- MongoDB installed and running
+
+### Installation
+
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/Supriya9002/SocialSphere
-2. Install dependencies:
+   cd SocialSphere
+   ```
+
+2. **Install dependencies:**
    ```bash
    npm install
-3. Start the server:
+   ```
+
+3. **Configure Environment Variables:**
+   - The project uses `env.js` or environment variables. Ensure you have the necessary configurations (DB URL, JWT Secret, Email credentials).
+
+4. **Start the server:**
    ```bash
-   npm start
+   npm run dev  # For development with Nodemailer
+   # OR
+   npm start    # Production start
+   ```
 
-## API Structure
-Authentication Routes
-- **/api/users/signup:** Register a new user account.
-- **/api/users/signin:** Log in as a user.
-- **/api/users/logout:** Log out the currently logged-in user.
-- **/api/users/logout-all-devices:** Log out the user from all devices.
+## 📚 API Documentation
 
+For detailed API documentation, please refer to:
+- **[API_DOCS.md](./API_DOCS.md)**: Comprehensive guide to all endpoints, parameters, and responses.
+- **[SocialSphere.postman_collection.json](./SocialSphere.postman_collection.json)**: Import this file into Postman for a pre-configured testing environment.
 
-## Testing
-Thoroughly test the API to ensure it meets the acceptance criteria. Unit tests, integration tests, and end-to-end tests can be implemented using testing frameworks like Jest, Mocha, or Supertest.
+### Quick Endpoint Overview
 
-## Documentation
-Document the application's functionalities, dependencies, API endpoints, and code organization for clarity. Use tools Postman for API documentation.
-- **Link To Postman (For Test This APIs)-** https://www.postman.com/mission-participant-11895744/workspace/social-media-api/collection/28528017-a6cf0957-20a4-41f0-bb7d-7318d19b25e3?action=share&creator=28528017
+| Feature | Method | Endpoint | Description |
+| :--- | :--- | :--- | :--- |
+| **Auth** | POST | `/api/users/signup` | Register new user |
+| | POST | `/api/users/signin` | Login (Returns Access & Refresh Tokens) |
+| | POST | `/api/users/refresh-token` | Refresh expired Access Token |
+| | POST | `/api/users/logout` | Logout (Revokes Refresh Token) |
+| **Search** | GET | `/api/search?search=query` | Global search (Users & Posts) |
+| **Users** | GET | `/api/users/get-all-details` | Get users (Supports search, filter, sort, page) |
+| **Posts** | GET | `/api/posts/all` | Get posts (Supports search, sort, page) |
 
-## License
+## 🧪 Testing
 
+This project includes a Postman Collection file `SocialSphere.postman_collection.json`. 
+1. Open Postman.
+2. Click **Import**.
+3. Select the `SocialSphere.postman_collection.json` file from the project root.
+4. The collection is pre-configured with variables. Ensure you set the `baseUrl` variable (default: `http://localhost:8000`).
+5. The `Signin` request automatically saves tokens for subsequent requests.
 
-## Acknowledgements
-Node.js, Express.js, and MongoDB used in the project.
+## 📄 License
+This project is licensed under the ISC License.
 
-## Author
- Supriya Haldar <br>
- GitHub: https://github.com/Supriya9002/SocialSphere
-
-   
+## 👤 Author
+**Supriya Haldar**
+- GitHub: [Supriya9002](https://github.com/Supriya9002)
