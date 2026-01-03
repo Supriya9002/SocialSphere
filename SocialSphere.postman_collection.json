@@ -48,9 +48,8 @@
 									"if(jsonData.accessToken) {",
 									"    pm.environment.set(\"accessToken\", jsonData.accessToken);",
 									"}",
-									"if(jsonData.refreshToken) {",
-									"    pm.environment.set(\"refreshToken\", jsonData.refreshToken);",
-									"}"
+									"var rt = pm.cookies.get('refreshToken');",
+									"if(rt){ pm.environment.set('refreshToken', rt); }"
 								],
 								"type": "text/javascript"
 							}
@@ -68,7 +67,7 @@
 								}
 							}
 						},
-						"description": "Responses:\\n201: { accessToken, user: { _id, name, email, gender, avatar } }\\n404: \"Email Invalid\" or \"Password Not Correct\"\\n500: \"Internal Server Error\"",
+						"description": "Responses:\\n201: { accessToken, user: { _id, name, email, gender, avatar } }\\nSets HttpOnly cookie refreshToken for future use.\\n404: \"Email Invalid\" or \"Password Not Correct\"\\n500: Structured JSON error.",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/signin",
 							"host": [
@@ -102,16 +101,7 @@
 					"request": {
 						"method": "POST",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"description": "Responses:\\n200: { accessToken }\\n401: \"Access Denied. No refresh token provided.\" or \"Invalid refresh token.\"\\n400: \"Invalid refresh token.\"",
+						"description": "Uses refreshToken cookie set on signin. No body required.\\nResponses:\\n200: { accessToken }\\n401/400: Invalid or missing refresh token.\\n500: Structured JSON error.",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/refresh-token",
 							"host": [
@@ -195,7 +185,7 @@
 								}
 							]
 						},
-						"description": "Stores avatar on S3 and saves URL in user profile.\\nResponses:\\n201: { _id, name, email, gender, avatar }\\n400: \"Invalid or missing userId parameter\"\\n404: \"User id not found\"\\n500: \"Internal Server Error\"",
+						"description": "Stores avatar on S3 and saves URL in user profile; also stores avatarKey.\\nLimits: 1MB max; larger returns 413.\\nResponses:\\n201: { _id, name, email, gender, avatar }\\n400: \"Invalid or missing userId parameter\"\\n404: \"User id not found\"\\n413: \"Image must be 1MB or below\"\\n500: Structured JSON error.",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/update-details/:userId",
 							"host": [
@@ -419,7 +409,7 @@
 								}
 							]
 						},
-						"description": "Uploads image to S3 using memory storage; imageUrl returns S3 URL.\\nResponses:\\n201: { _id, userId, caption, imageUrl, ... }\\n400: { message: \"No file uploaded. Ensure form field name is \\\"imageUrl\\\" and request is multipart/form-data.\" }\\n500: \"server error! Try later!!\"",
+						"description": "Uploads image to S3 using memory storage; imageUrl returns S3 URL; imageKey stored server-side.\\nLimits: 1MB max; larger returns 413.\\nResponses:\\n201: { _id, userId, caption, imageUrl, ... }\\n400: { message: \"No file uploaded. Ensure form field name is \\\"imageUrl\\\" and request is multipart/form-data.\" }\\n413: \"Image must be 1MB or below\"\\n500: Structured JSON error.",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts",
 							"host": [
@@ -477,7 +467,7 @@
 						},
 						"method": "GET",
 						"header": [],
-						"description": "Responses:\\n200: { _id, userId, caption, imageUrl, ... }\\n404: \"Post Not Found\"\\n500: \"server error! Try later!!\"",
+						"description": "Responses:\\n200: { _id, userId, caption, imageUrl, ... }\\n404: \"Post Not Found\"\\n500: Structured JSON error.",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts/:postId",
 							"host": [
@@ -528,7 +518,7 @@
 								}
 							]
 						},
-						"description": "If image file provided, uploads to S3 and updates imageUrl with S3 URL.\\nResponses:\\n200: \"Post Updated\"\\n404: \"Post Not found\"\\n500: \"server error! Try later!!\"",
+						"description": "If image file provided, uploads to S3 and updates imageUrl with S3 URL; old image deleted; imageKey updated.\\nLimits: 1MB max; larger returns 413.\\nResponses:\\n200: \"Post Updated\"\\n404: \"Post Not found\"\\n413: \"Image must be 1MB or below\"\\n500: Structured JSON error.",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts/:postId",
 							"host": [
@@ -564,7 +554,7 @@
 						},
 						"method": "DELETE",
 						"header": [],
-						"description": "Responses:\\n200: \"Post Delete\"\\n404: \"Not found Post\"\\n500: \"server error! Try later!!\"",
+						"description": "Responses:\\n200: \"Post Delete\" (S3 image deleted)\\n404: \"Not found Post\"\\n500: Structured JSON error.",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts/:postId",
 							"host": [

@@ -9,14 +9,21 @@ This document outlines the API endpoints available in the SocialSphere applicati
 Protected routes require a JWT access token.
 - **Header:** `Authorization`
 - **Value:** `Bearer {{accessToken}}`
-- Refresh tokens are issued on signin and stored as an HttpOnly cookie `refreshToken`.
+- Refresh tokens are issued on signin and stored as an HttpOnly cookie `refreshToken` (used automatically by Postman).
+- Global error responses are structured JSON:
+  - `{ error, statusCode, path, method, timestamp, code?, bucket?, endpoint?, requestId? }`
 
 ## File Uploads & S3
-- File uploads use memory storage with Multer and are uploaded to AWS S3.
-- Returned fields `imageUrl` (posts) and `avatar` (user) contain S3 URLs.
+- File uploads use Multer memory storage and AWS SDK v3 (S3Client).
+- Limits: images must be 1MB or below; larger files return 413.
+- Stored fields:
+  - Posts: `imageUrl` (S3 URL), `imageKey` (S3 object key)
+  - Users: `avatar` (S3 URL), `avatarKey` (S3 object key)
+- On image replacement or post deletion, the previous S3 object is deleted.
 - Required environment:
-  - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `AWS_S3_BUCKET`
-  - Ensure `.env` is loaded (this app imports `env.js` which calls `dotenv.config()`).
+  - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` (must match bucket), `AWS_S3_BUCKET`
+  - Ensure `.env` is loaded (env.js calls `dotenv.config()`).
+  - If the configured region is wrong, the service auto-detects the correct region on PermanentRedirect and retries.
 
 ## Endpoints
 
@@ -38,7 +45,7 @@ Responses (summary):
 - Signup: 201 user object; 500 "Internal Server Error"
 - Signin: 201 `{ accessToken, user }`; 404 "Email Invalid" or "Password Not Correct"; 500 error
 - Refresh Token: 200 `{ accessToken }`; 401 "Access Denied. No refresh token provided." or "Invalid refresh token."; 400 "Invalid refresh token."
-- Update Details: 201 updated user; 400 invalid userId; 404 "User id not found"; 500 error
+- Update Details: 201 updated user; 400 invalid userId; 404 "User id not found"; 413 "Image must be 1MB or below"; 500 error
 - Get User Details: 201 user public fields; 404 "UserId Not Found"; 500 error
 - Get All Users: 200 array of users; 500 error
 - Logout: 200 "logout successful"; 400 "Refresh token is required for logout" or "User already logged out or token not found"; 500 error
@@ -60,8 +67,8 @@ Responses (summary):
 - Feed: 200 array of posts; 500 "server error! Try later!!"
 - Get My Posts: 200 array; 404 "You Can not Create Any Post"; 500 error
 - Get One: 200 post; 404 "Post Not Found"; 500 error
-- Create: 201 post (imageUrl is S3 URL); 400 `{ message: "No file uploaded..." }`; 500 error
-- Update: 200 "Post Updated" (if image provided, imageUrl is S3 URL); 404 "Post Not found"; 500 error
+- Create: 201 post (imageUrl S3 URL, imageKey stored); 400 `{ message: "No file uploaded..." }`; 413 "Image must be 1MB or below"; 500 error
+- Update: 200 "Post Updated" (if image provided, imageUrl S3 URL, imageKey updated and old image deleted); 404 "Post Not found"; 413 "Image must be 1MB or below"; 500 error
 - Delete: 200 "Post Delete"; 404 "Not found Post"; 500 error
 ### 3. Comments
 **Base Path:** `/api/comments`

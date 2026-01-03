@@ -42,16 +42,21 @@ class S3Service {
 
   async uploadFile(file, folder = "uploads") {
     if (!file || file.size > 1 * 1024 * 1024) {
-      throw new Error("File too large. Max 1MB");
+      throw new ApplicationError("File too large. Max 1MB", 413);
     }
     const fileName = generateFileName(file.originalname);
     const key = `${folder}/${fileName}`;
-    await this.sendWithRegionRetry(() => new PutObjectCommand({
-      Bucket: this.bucket,
-      Key: key,
-      Body: file.buffer,
-      ContentType: file.mimetype,
-    }));
+    try {
+      await this.sendWithRegionRetry(() => new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      }));
+    } catch (e) {
+      const msg = `S3 upload failed: ${e?.Code || e?.name || "Unknown error"}; bucket=${this.bucket}; region=${this.region}`;
+      throw new ApplicationError(msg, 502);
+    }
     const url = `https://${this.bucket}.s3.${this.region}.amazonaws.com/${key}`;
     return {
       url,
@@ -61,10 +66,15 @@ class S3Service {
   }
 
   async deleteFile(key) {
-    await this.sendWithRegionRetry(() => new DeleteObjectCommand({
-      Bucket: this.bucket,
-      Key: key,
-    }));
+    try {
+      await this.sendWithRegionRetry(() => new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+      }));
+    } catch (e) {
+      const msg = `S3 delete failed: ${e?.Code || e?.name || "Unknown error"}; bucket=${this.bucket}; region=${this.region}`;
+      throw new ApplicationError(msg, 502);
+    }
   }
 }
  

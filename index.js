@@ -47,10 +47,27 @@ server.get("/", (req, res) => {
 //Application Error Handler
 server.use((err, req, res, next) => {
   if (err instanceof ApplicationError) {
-    res.status(err.statusCode).send(err.message);
+    return res.status(err.statusCode || 500).json({
+      error: err.message,
+      statusCode: err.statusCode || 500,
+      path: req.originalUrl,
+      method: req.method,
+      timestamp: new Date().toISOString(),
+    });
   }
-  res.status(500).send("server error! Try later!!");
-  next();
+  const status = err.statusCode || 500;
+  const payload = {
+    error: err?.message || "server error! Try later!!",
+    statusCode: status,
+    path: req.originalUrl,
+    method: req.method,
+    timestamp: new Date().toISOString(),
+    code: err?.code || err?.Code || err?.name,
+    bucket: err?.Bucket,
+    endpoint: err?.Endpoint,
+    requestId: err?.RequestId || err?.$metadata?.requestId,
+  };
+  return res.status(status).json(payload);
 });
 
 //port

@@ -33,7 +33,7 @@ export default class PostController {
       res.status(201).send(newpost);
     } catch (err) {
       console.log(err);
-      throw new ApplicationError("server error! Try later!!", 500);
+      throw new ApplicationError(`Failed to add post: ${err?.message || "Unknown error"}`, 500);
     }
   }
 
@@ -50,7 +50,7 @@ export default class PostController {
       }
     } catch (err) {
       console.log(err);
-      throw new ApplicationError("server error! Try later!!", 500);
+      throw new ApplicationError(`Failed to get post: ${err?.message || "Unknown error"}`, 500);
     }
   }
 
@@ -67,7 +67,7 @@ export default class PostController {
       }
     } catch (err) {
       console.log(err);
-      throw new ApplicationError("server error! Try later!!", 500);
+      throw new ApplicationError(`Failed to get user posts: ${err?.message || "Unknown error"}`, 500);
     }
   }
 
@@ -86,7 +86,7 @@ export default class PostController {
       res.status(200).send(allPost);
     } catch (err) {
       console.log(err);
-      throw new ApplicationError("server error! Try later!!", 500);
+      throw new ApplicationError(`Failed to get all posts: ${err?.message || "Unknown error"}`, 500);
     }
   }
 
@@ -106,7 +106,7 @@ export default class PostController {
       return res.status(404).send("Not found Post");
     } catch (err) {
       console.log(err);
-      throw new ApplicationError("server error! Try later!!", 500);
+      throw new ApplicationError(`Failed to delete post: ${err?.message || "Unknown error"}`, 500);
     }
   }
 
@@ -141,7 +141,7 @@ export default class PostController {
       }
     } catch (err) {
       console.log(err);
-      throw new ApplicationError("server error! Try later!!", 500);
+      throw new ApplicationError(`Failed to update post: ${err?.message || "Unknown error"}`, 500);
     }
   }
 }
