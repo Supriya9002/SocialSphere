@@ -2,6 +2,7 @@ import UserRepostory from "./user.repository.js";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import s3Service from "./../../services/s3.service.js";
 
 export default class UserController {
   constructor() {
@@ -39,7 +40,7 @@ export default class UserController {
           },
           process.env.Access_Token_JWT_SECRET,
           {
-            expiresIn: Access_Token_ExpiresIn,
+            expiresIn: process.env.Access_Token_ExpiresIn,
           }
         );
 
@@ -49,7 +50,7 @@ export default class UserController {
           },
           process.env.Refresh_Token_JWT_SECRET,
           {
-            expiresIn: Refresh_Token_ExpiresIn,
+            expiresIn: process.env.Refresh_Token_ExpiresIn,
           }
         );
 
@@ -93,7 +94,7 @@ export default class UserController {
     }
 
     try {
-      const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+      const decoded = jwt.verify(refreshToken, process.env.Refresh_Token_JWT_SECRET);
       const user = await this.userRepostory.findUserWithToken(
         decoded.userID,
         refreshToken
@@ -105,7 +106,7 @@ export default class UserController {
 
       const accessToken = jwt.sign(
         { userID: user._id },
-        process.env.JWT_SECRET,
+        process.env.Access_Token_JWT_SECRET,
         { expiresIn: "1h" }
       );
 
@@ -207,7 +208,7 @@ export default class UserController {
     try {
       console.log("Supriya");
       console.log(req.body);
-      console.log(req.file?.filename);
+      console.log(req.file?.originalname);
 
       const userId = req.params.userId;
       if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
@@ -221,8 +222,20 @@ export default class UserController {
 
       const updateData = req.body;
       //if user upload Avatar Uploads for user profile
-      if (req.file.filename && req.body) {
-        updateData.avatar = req.file.filename;
+      if (req.file && req.file.buffer) {
+        if (req.file.size > 1 * 1024 * 1024) {
+          return res.status(413).send("Image must be 1MB or below");
+        }
+        const existing = await this.userRepostory.findById(userId);
+        if (!existing) {
+          return res.status(404).send("User id not found");
+        }
+        if (existing.avatarKey) {
+          await s3Service.deleteFile(existing.avatarKey);
+        }
+        const uploadResult = await s3Service.uploadFile(req.file, "avatars");
+        updateData.avatar = uploadResult.url;
+        updateData.avatarKey = uploadResult.key;
       }
       const update = await this.userRepostory.update_details(
         userId,

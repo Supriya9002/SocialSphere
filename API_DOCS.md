@@ -11,6 +11,13 @@ Protected routes require a JWT access token.
 - **Value:** `Bearer {{accessToken}}`
 - Refresh tokens are issued on signin and stored as an HttpOnly cookie `refreshToken`.
 
+## File Uploads & S3
+- File uploads use memory storage with Multer and are uploaded to AWS S3.
+- Returned fields `imageUrl` (posts) and `avatar` (user) contain S3 URLs.
+- Required environment:
+  - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `AWS_S3_BUCKET`
+  - Ensure `.env` is loaded (this app imports `env.js` which calls `dotenv.config()`).
+
 ## Endpoints
 
 ### 1. User Authentication & Management
@@ -53,8 +60,8 @@ Responses (summary):
 - Feed: 200 array of posts; 500 "server error! Try later!!"
 - Get My Posts: 200 array; 404 "You Can not Create Any Post"; 500 error
 - Get One: 200 post; 404 "Post Not Found"; 500 error
-- Create: 201 post; 400 `{ message: "No file uploaded..." }`; 500 error
-- Update: 200 "Post Updated"; 404 "Post Not found"; 500 error
+- Create: 201 post (imageUrl is S3 URL); 400 `{ message: "No file uploaded..." }`; 500 error
+- Update: 200 "Post Updated" (if image provided, imageUrl is S3 URL); 404 "Post Not found"; 500 error
 - Delete: 200 "Post Delete"; 404 "Not found Post"; 500 error
 ### 3. Comments
 **Base Path:** `/api/comments`

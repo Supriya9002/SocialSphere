@@ -30,7 +30,7 @@ SocialSphere is a robust Social Media REST API built with Node.js, Express.js, a
 - **Framework**: Express.js
 - **Database**: MongoDB (Mongoose ODM)
 - **Authentication**: JSON Web Tokens (JWT)
-- **File Handling**: Multer (for image uploads)
+- **File Handling**: Multer (memory storage) + AWS S3 (image storage)
 - **Email Service**: Nodemailer (for OTPs)
 - **Logging**: Winston / Custom Logger
 
@@ -70,9 +70,18 @@ src/
    ```bash
    npm install
    ```
+   For S3 uploads:
+   ```bash
+   npm install aws-sdk
+   ```
 
 3. **Configure Environment Variables:**
-   - The project uses `env.js` or environment variables. Ensure you have the necessary configurations (DB URL, JWT Secret, Email credentials).
+   - The project uses `env.js` with `dotenv`. Ensure:
+     - Database: `DB_URL`
+     - JWT: `JWT_SECRET`, `Access_Token_JWT_SECRET`, `Refresh_Token_JWT_SECRET`
+     - Email (for OTP): provider credentials
+     - AWS S3 (for uploads): `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `AWS_S3_BUCKET`
+   - Do not commit secrets; keep them only in `.env` or a secrets manager.
 
 4. **Start the server:**
    ```bash
@@ -95,9 +104,11 @@ For detailed API documentation, please refer to:
 | | POST | `/api/users/signin` | Login (Returns Access & Refresh Tokens) |
 | | POST | `/api/users/refresh-token` | Refresh expired Access Token |
 | | POST | `/api/users/logout` | Logout (Revokes Refresh Token) |
+| **Users** | PUT | `/api/users/update-details/:userId` | Update user details (avatar stored on S3) |
 | **Search** | GET | `/api/search?search=query` | Global search (Users & Posts) |
 | **Users** | GET | `/api/users/get-all-details` | Get users (Supports search, filter, sort, page) |
 | **Posts** | GET | `/api/posts/all` | Get posts (Supports search, sort, page) |
+| **Posts** | POST | `/api/posts` | Create post (image stored on S3) |
 
 ## 🧪 Testing
 

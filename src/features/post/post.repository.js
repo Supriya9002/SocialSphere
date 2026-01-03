@@ -80,7 +80,10 @@ export default class PostRepository{
     // update specific Post by user
     async update(userID, postID, updateData){
         try{
-            return await PostModel.updateMany({_id: postID, userId: userID},{caption: updateData.caption, imageUrl: updateData.imageUrl})
+            return await PostModel.updateMany(
+                { _id: postID, userId: userID },
+                { caption: updateData.caption, imageUrl: updateData.imageUrl, imageKey: updateData.imageKey }
+            )
         }catch(err){
             console.log(err);
             throw new ApplicationError("server error! Try later!!", 500)

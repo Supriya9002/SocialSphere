@@ -1,5 +1,6 @@
 import PostRepository from "./post.repository.js";
 import ApplicationError from "./../../error/applicationError.js";
+import s3Service from "./../../services/s3.service.js";
 
 export default class PostController {
   constructor() {
@@ -7,7 +8,7 @@ export default class PostController {
   }
 
   // Add Post
-  async addPost(req, res) {
+  async addPost(req, res) { 
     try {
       if (!req.file) {
         console.log("No file received in addPost; req.file is undefined");
@@ -18,11 +19,15 @@ export default class PostController {
               'No file uploaded. Ensure form field name is "imageUrl" and request is multipart/form-data.',
           });
       }
-      console.log(req.file.filename);
+      if (req.file.size > 1 * 1024 * 1024) {
+        return res.status(413).send("Image must be 1MB or below");
+      }
+      const uploadResult = await s3Service.uploadFile(req.file, "posts");
       const post = {
         userId: req.userID,
         caption: req.body.caption,
-        imageUrl: req.file.filename,
+        imageUrl: uploadResult.url,
+        imageKey: uploadResult.key,
       };
       const newpost = await this.postRepository.add(post);
       res.status(201).send(newpost);
@@ -89,15 +94,16 @@ export default class PostController {
   async deletePost(req, res) {
     try {
       const userID = req.userID;
-      const deletePost = await this.postRepository.delete(
-        userID,
-        req.params.postId
-      );
-      if (deletePost) {
-        res.status(200).send("Post Delete");
-      } else {
-        res.status(404).send("Not found Post");
+      const post = await this.postRepository.getOne(req.params.postId);
+      if (!post || String(post.userId) !== String(userID)) {
+        return res.status(404).send("Not found Post");
       }
+      if (post.imageKey) {
+        await s3Service.deleteFile(post.imageKey);
+      }
+      const deleteResult = await this.postRepository.delete(userID, req.params.postId);
+      if (deleteResult?.deletedCount > 0) return res.status(200).send("Post Delete");
+      return res.status(404).send("Not found Post");
     } catch (err) {
       console.log(err);
       throw new ApplicationError("server error! Try later!!", 500);
@@ -108,6 +114,21 @@ export default class PostController {
   async updatePost(req, res) {
     try {
       const userID = req.userID;
+      if (req.file) {
+        if (req.file.size > 1 * 1024 * 1024) {
+          return res.status(413).send("Image must be 1MB or below");
+        }
+        const existing = await this.postRepository.getOne(req.params.postId);
+        if (!existing || String(existing.userId) !== String(userID)) {
+          return res.status(404).send("Post Not found");
+        }
+        if (existing.imageKey) {
+          await s3Service.deleteFile(existing.imageKey);
+        }
+        const uploadResult = await s3Service.uploadFile(req.file, "posts");
+        req.body.imageUrl = uploadResult.url;
+        req.body.imageKey = uploadResult.key;
+      }
       const updatePost = await this.postRepository.update(
         userID,
         req.params.postId,

@@ -195,7 +195,7 @@
 								}
 							]
 						},
-						"description": "Responses:\\n201: { _id, name, email, gender, avatar }\\n400: \"Invalid or missing userId parameter\"\\n404: \"User id not found\"\\n500: \"Internal Server Error\"",
+						"description": "Stores avatar on S3 and saves URL in user profile.\\nResponses:\\n201: { _id, name, email, gender, avatar }\\n400: \"Invalid or missing userId parameter\"\\n404: \"User id not found\"\\n500: \"Internal Server Error\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/update-details/:userId",
 							"host": [
@@ -419,7 +419,7 @@
 								}
 							]
 						},
-						"description": "Responses:\\n201: { _id, userId, caption, imageUrl, ... }\\n400: { message: \"No file uploaded. Ensure form field name is \\\"imageUrl\\\" and request is multipart/form-data.\" }\\n500: \"server error! Try later!!\"",
+						"description": "Uploads image to S3 using memory storage; imageUrl returns S3 URL.\\nResponses:\\n201: { _id, userId, caption, imageUrl, ... }\\n400: { message: \"No file uploaded. Ensure form field name is \\\"imageUrl\\\" and request is multipart/form-data.\" }\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts",
 							"host": [
@@ -528,7 +528,7 @@
 								}
 							]
 						},
-						"description": "Responses:\\n200: \"Post Updated\"\\n404: \"Post Not found\"\\n500: \"server error! Try later!!\"",
+						"description": "If image file provided, uploads to S3 and updates imageUrl with S3 URL.\\nResponses:\\n200: \"Post Updated\"\\n404: \"Post Not found\"\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts/:postId",
 							"host": [

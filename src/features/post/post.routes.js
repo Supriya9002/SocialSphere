@@ -13,6 +13,7 @@ postRouter.get("/all", (req, res)=>{
     postController.getAllPost(req, res) //getAllPost
 })
 postRouter.post("/", uplodeFile.single("imageUrl") ,(req, res)=>{ 
+    console.log("req.file", req.file);
     postController.addPost(req, res)
 })
 postRouter.get("/:postId", (req, res)=>{

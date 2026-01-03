@@ -10,7 +10,7 @@ const userRouter = express.Router();
 const userController =new UserController();
 
 // All the paths to controller methods.
-// User Profile Updates
+// User Profile Updates 
 userRouter.put("/update-details/:userId", jwtAuth, uploadAvatar.single("avatar"), (req, res)=>{ //User Must be send photo 2MB
     console.log("ROMA")
     userController.update_details_by_id(req, res)

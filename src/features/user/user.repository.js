@@ -16,6 +16,14 @@ export default class UserRepostory{
             throw new ApplicationError("server error! Try later!!", 500)
         }
     }
+    async findById(userId){
+        try{
+            return await UserModel.findById(userId);
+        }catch(err){
+            console.log(err);
+            throw new ApplicationError("server error! Try later!!", 500)
+        }
+    }
     async findEmail(email){
         try{
             return await UserModel.findOne({email});
