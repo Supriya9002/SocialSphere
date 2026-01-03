@@ -22,6 +22,7 @@
 								}
 							}
 						},
+						"description": "Responses:\\n201: { _id, name, email, gender, avatar, sessions: [], password: \"<hashed>\" }\\n500: \"Internal Server Error\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/signup",
 							"host": [
@@ -67,6 +68,7 @@
 								}
 							}
 						},
+						"description": "Responses:\\n201: { accessToken, user: { _id, name, email, gender, avatar } }\\n404: \"Email Invalid\" or \"Password Not Correct\"\\n500: \"Internal Server Error\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/signin",
 							"host": [
@@ -109,6 +111,7 @@
 								}
 							}
 						},
+						"description": "Responses:\\n200: { accessToken }\\n401: \"Access Denied. No refresh token provided.\" or \"Invalid refresh token.\"\\n400: \"Invalid refresh token.\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/refresh-token",
 							"host": [
@@ -147,6 +150,7 @@
 								}
 							}
 						},
+						"description": "Responses:\\n200: \"logout successful\"\\n400: \"Refresh token is required for logout\" or \"User already logged out or token not found\"\\n500: \"Internal Server Error\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/logout",
 							"host": [
@@ -191,6 +195,7 @@
 								}
 							]
 						},
+						"description": "Responses:\\n201: { _id, name, email, gender, avatar }\\n400: \"Invalid or missing userId parameter\"\\n404: \"User id not found\"\\n500: \"Internal Server Error\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/update-details/:userId",
 							"host": [
@@ -227,6 +232,7 @@
 						},
 						"method": "GET",
 						"header": [],
+						"description": "Responses:\\n201: { name, email, gender, avatar }\\n404: \"UserId Not Found\"\\n500: \"Internal Server Error\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/get-details/:userId",
 							"host": [
@@ -263,6 +269,7 @@
 						},
 						"method": "GET",
 						"header": [],
+						"description": "Responses:\\n200: [ { _id, name, email, gender, avatar } ]\\n500: \"Internal Server Error\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/get-all-details?page=1&limit=10&search=&sort=&gender=",
 							"host": [
@@ -314,6 +321,7 @@
 						},
 						"method": "GET",
 						"header": [],
+						"description": "Responses:\\n400: \"All Device logout successful\"\\n400: \"User already logged out\"\\n500: \"Internal Server Error\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/users/logout-all-devices",
 							"host": [
@@ -348,6 +356,7 @@
 						},
 						"method": "GET",
 						"header": [],
+						"description": "Responses:\\n200: [ { _id, userId, caption, imageUrl, ... } ]\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts/all?page=1&limit=10&search=&sort=",
 							"host": [
@@ -410,6 +419,7 @@
 								}
 							]
 						},
+						"description": "Responses:\\n201: { _id, userId, caption, imageUrl, ... }\\n400: { message: \"No file uploaded. Ensure form field name is \\\"imageUrl\\\" and request is multipart/form-data.\" }\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts",
 							"host": [
@@ -438,6 +448,7 @@
 						},
 						"method": "GET",
 						"header": [],
+						"description": "Responses:\\n200: [ { _id, userId, caption, imageUrl, ... } ]\\n404: \"You Can not Create Any Post\"\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts",
 							"host": [
@@ -466,6 +477,7 @@
 						},
 						"method": "GET",
 						"header": [],
+						"description": "Responses:\\n200: { _id, userId, caption, imageUrl, ... }\\n404: \"Post Not Found\"\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts/:postId",
 							"host": [
@@ -516,6 +528,7 @@
 								}
 							]
 						},
+						"description": "Responses:\\n200: \"Post Updated\"\\n404: \"Post Not found\"\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts/:postId",
 							"host": [
@@ -551,6 +564,7 @@
 						},
 						"method": "DELETE",
 						"header": [],
+						"description": "Responses:\\n200: \"Post Delete\"\\n404: \"Not found Post\"\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/posts/:postId",
 							"host": [
@@ -600,6 +614,7 @@
 								}
 							}
 						},
+						"description": "Responses:\\n201: { _id, userId, postId, content, ... }\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/comments/:postId",
 							"host": [
@@ -635,6 +650,7 @@
 						},
 						"method": "GET",
 						"header": [],
+						"description": "Responses:\\n200: [ { _id, userId, postId, content, ... } ]\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/comments/:postId",
 							"host": [
@@ -679,6 +695,7 @@
 								}
 							}
 						},
+						"description": "Responses:\\n201: { _id, userId, postId, content, ... }\\n404: \"Comment Not found\"\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/comments/:commentId",
 							"host": [
@@ -714,6 +731,7 @@
 						},
 						"method": "DELETE",
 						"header": [],
+						"description": "Responses:\\n201: \"Comment Deleted\"\\n404: \"Not found Post\"\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/comments/:commentId",
 							"host": [
@@ -754,6 +772,7 @@
 						},
 						"method": "GET",
 						"header": [],
+						"description": "Use query param type=Post|Comment. Provide the corresponding Post or Comment id in the path.",
 						"url": {
 							"raw": "{{baseUrl}}/api/likes/:id",
 							"host": [
@@ -763,6 +782,12 @@
 								"api",
 								"likes",
 								":id"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": ""
+								}
 							],
 							"variable": [
 								{
@@ -789,6 +814,7 @@
 						},
 						"method": "GET",
 						"header": [],
+						"description": "Toggle like on Post or Comment. Requires auth. Use query param type=Post|Comment. Path id must match the selected type.",
 						"url": {
 							"raw": "{{baseUrl}}/api/likes/toggle/:id",
 							"host": [
@@ -799,6 +825,12 @@
 								"likes",
 								"toggle",
 								":id"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": ""
+								}
 							],
 							"variable": [
 								{
@@ -991,6 +1023,7 @@
 								}
 							}
 						},
+						"description": "Responses:\\n201: \"OTP sent successfully\"\\n404: \"Please Send Corrected Email\"\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/otp/send",
 							"host": [
@@ -1029,6 +1062,7 @@
 								}
 							}
 						},
+						"description": "Responses:\\n201: { msg: \"Password Reset Success\" or details object }\\n404: \"Please Send Corrected Email\"\\n500: \"server error! Try later!!\"",
 						"url": {
 							"raw": "{{baseUrl}}/api/otp/verify",
 							"host": [
