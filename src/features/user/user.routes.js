@@ -21,7 +21,10 @@ userRouter.post("/signup", (req, res)=>{
 userRouter.post("/signin", (req, res)=>{
     userController.signin(req, res)
 })
-userRouter.get("/logout",jwtAuth, (req, res)=>{ 
+userRouter.post("/refresh-token", (req, res) => {
+    userController.refreshAccessToken(req, res);
+});
+userRouter.post("/logout",jwtAuth, (req, res)=>{ 
     userController.logout(req, res)
 })
 userRouter.get("/logout-all-devices", jwtAuth, (req, res)=>{

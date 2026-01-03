@@ -18,11 +18,12 @@ Protected routes require a JWT token.
 | Method | Endpoint | Description | Auth Required | Request Body / Params |
 | :--- | :--- | :--- | :--- | :--- |
 | `POST` | `/signup` | Register a new user | No | JSON: `{ "name": "...", "email": "...", "password": "...", "gender": "..." }` |
-| `POST` | `/signin` | Log in user | No | JSON: `{ "email": "...", "password": "..." }` |
+| `POST` | `/signin` | Log in user | No | JSON: `{ "email": "...", "password": "..." }` <br> **Response**: `{ "accessToken": "...", "refreshToken": "..." }` |
+| `POST` | `/refresh-token` | Refresh Access Token | No | JSON: `{ "refreshToken": "..." }` <br> **Response**: `{ "accessToken": "..." }` |
 | `PUT` | `/update-details/:userId` | Update user profile | Yes | **FormData**: `avatar` (File), fields like `name`, `gender` etc. |
 | `GET` | `/get-details/:userId` | Get user details by ID | Yes | Param: `userId` |
 | `GET` | `/get-all-details` | Get all users | Yes | - |
-| `GET` | `/logout` | Logout current session | Yes | - |
+| `POST` | `/logout` | Logout current session | Yes | JSON: `{ "refreshToken": "..." }` |
 | `GET` | `/logout-all-devices` | Logout from all devices | Yes | - |
 
 ### 2. Posts

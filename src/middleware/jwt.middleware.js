@@ -19,15 +19,15 @@ const jwtAuth = (req, res, next)=>{
     // 3. check if token is valid.
     try{
         const payload = jwt.verify(token, process.env.JWT_SECRET);
-        // Check if the user associated with the token exists and if the token is still valid
-        const user = UserModel.findOne({_id: payload.userID, sessions: token});
-        //console.log("A lo user in jwt.middleware: ", user)
-        if(!user){
-            throw new ApplicationError('Unauthorized', 401);
-        }
+        // Check if the user associated with the token exists
+        // Note: For Access Tokens, we don't necessarily check the DB for the token existence if we want statelessness.
+        // However, if we want to support immediate revocation, we would.
+        // Since we moved to Refresh Tokens stored in DB, we treat Access Tokens as stateless for performance, 
+        // or we can verify user existence.
+        
         req.userID = payload.userID;
-        console.log(payload);
-        console.log("A lo req.userID :", req.userID);
+        // console.log(payload);
+        // console.log("A lo req.userID :", req.userID);
     } catch(err){
         // 4. return error.
         console.log(err);

@@ -24,16 +24,23 @@ export default class UserRepostory{
             throw new ApplicationError("server error! Try later!!", 500)
         }
     }
+
+    async findUserWithToken(userId, token) {
+        try {
+            return await UserModel.findOne({ _id: userId, sessions: token });
+        } catch (err) {
+            console.log(err);
+            throw new ApplicationError("server error! Try later!!", 500);
+        }
+    }
+
     async logout(userID, sessionToken){
         try{
-            //Hare code
-            
             const result = await UserModel.findByIdAndUpdate(
                 userID,
-                {$pull: {sessions: sessionToken}}
+                {$pull: {sessions: sessionToken}},
+                { new: true }
             )
-            //console.log(result)
-            await result.save();
             return result;
         }catch(err){
             console.log(err);
@@ -45,10 +52,9 @@ export default class UserRepostory{
         try{
             const result = await UserModel.findByIdAndUpdate(
                 userID,
-                {$set: {sessions: []}}
+                {$set: {sessions: []}},
+                { new: true }
             )
-            //console.log(result)
-            await result.save();
             return result;
         }catch(err){
             console.log(err);

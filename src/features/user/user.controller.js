@@ -26,24 +26,38 @@ export default class UserController{
             const user = await this.userRepostory.findEmail(req.body.email);
             //console.log("A durling", user);
             if(!user){
-                res.status(404).send("Email Invalid");
+                return res.status(404).send("Email Invalid");
             }
             const userPassword = await bcrypt.compare(req.body.password, user.password);
             if(userPassword){
-                const token = jwt.sign(
+                const accessToken = jwt.sign(
                     {
-                        userID: user._id, //hare set user(_id), it uses in jwt.middleware.js
+                        userID: user._id, 
                     },
                     process.env.JWT_SECRET,
                     {
                         expiresIn: "1h"
                     }
-                )
-                // Add the generated token to the user's sessions array
-                user.sessions.push(token);
+                );
+                
+                const refreshToken = jwt.sign(
+                    {
+                        userID: user._id, 
+                    },
+                    process.env.JWT_SECRET,
+                    {
+                        expiresIn: "7d"
+                    }
+                );
+
+                // Add the generated refresh token to the user's sessions array
+                user.sessions.push(refreshToken);
                 await user.save();
-                //console.log("A durling", user);
-                res.status(201).send(token)
+                
+                res.status(201).send({
+                    accessToken,
+                    refreshToken
+                });
             }else{
                 res.status(404).send("Password Not Correct");
             }
@@ -53,16 +67,51 @@ export default class UserController{
         }
     }
 
+    // Refresh Access Token
+    async refreshAccessToken(req, res) {
+        const { refreshToken } = req.body;
+        if (!refreshToken) {
+            return res.status(401).send("Access Denied. No refresh token provided.");
+        }
+
+        try {
+            const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+            const user = await this.userRepostory.findUserWithToken(decoded.userID, refreshToken);
+            
+            if (!user) {
+                return res.status(401).send("Invalid refresh token.");
+            }
+
+            const accessToken = jwt.sign(
+                { userID: user._id },
+                process.env.JWT_SECRET,
+                { expiresIn: "1h" }
+            );
+
+            res.status(200).json({ accessToken });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).send("Invalid refresh token.");
+        }
+    }
+
     //Logout One device
     async logout(req, res){
         try{
-            const token = req.headers['authorization'];
-            console.log("A LO token in LOGOUT ", token, req.userID)
-            const result = await this.userRepostory.logout(req.userID, token);
-            if (result == null) {
-                return res.status(400).send("User already logged out");
+            // For stateless access tokens, we need the refresh token to identify the session to revoke.
+            const { refreshToken } = req.body;
+            // Fallback: If no refresh token provided, we can't remove a specific session if we don't store access tokens.
+            // But if the client sends the refresh token, we remove it.
+            
+            if (!refreshToken) {
+                return res.status(400).send("Refresh token is required for logout");
             }
-            res.status(400).send("logout successful")
+
+            const result = await this.userRepostory.logout(req.userID, refreshToken);
+            if (result == null) {
+                return res.status(400).send("User already logged out or token not found");
+            }
+            res.status(200).send("logout successful")
         }catch(err){
             console.log(err);
             res.status(500).send("Internal Server Error");   
