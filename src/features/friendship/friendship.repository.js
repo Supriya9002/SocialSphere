@@ -1,6 +1,7 @@
 
 import mongoose from "mongoose";
 import FriendShipSchema from "./friendship.schema.js"
+import ApplicationError from "./../../error/applicationError.js"
 
 //model
 const friendshipModel = mongoose.model("friend", FriendShipSchema)
@@ -39,7 +40,7 @@ export default class FriendShipRepository{
                 existingFriendship.timestamps.updatedAt = Date.now();
                 return await existingFriendship.save();
             }else{
-                const newtoggle =new friendshipModel(
+                const newtoggle =new friendshipModel( 
                     {
                         userId: userID, 
                         friendId: friendID, 
@@ -48,7 +49,7 @@ export default class FriendShipRepository{
                             createdAt: Date.now()
                         }
                     })
-                return await newtoggle.save();
+                return await newtoggle.save(); 
             }
         }catch(err){
             console.log(err);

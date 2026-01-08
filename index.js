@@ -32,12 +32,12 @@ server.use(loggerMiddleware);
 
 // for all requests related to App
 server.use("/api/users", userRouter);
-server.use("/api/posts", jwtAuth, postRouter);
-server.use("/api/comments", jwtAuth, commentRouter);
-server.use("/api/likes", jwtAuth, likeRouter);
-server.use("/api/friends", jwtAuth, friendshipRouter);
-server.use("/api/otp", jwtAuth, OtpRouter);
-server.use("/api/search", jwtAuth, searchRouter);
+server.use("/api/posts", postRouter);
+server.use("/api/comments", commentRouter);
+server.use("/api/likes", likeRouter);
+server.use("/api/friends", friendshipRouter);
+server.use("/api/otp", OtpRouter);
+server.use("/api/search", searchRouter);
 
 //all API
 server.get("/", (req, res) => {
@@ -71,7 +71,7 @@ server.use((err, req, res, next) => {
 });
 
 //port
-server.listen(8000, () => {
-  connectUsingMongoose();
+server.listen(8000, async () => {
+  await connectUsingMongoose();
   console.log("Server Listen on 8000");
 });

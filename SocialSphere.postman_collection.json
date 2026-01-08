@@ -853,7 +853,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/friends/get-friends/:userId?page=1&limit=10",
+							"raw": "{{baseUrl}}/api/friends/get-friends?page=1&limit=10",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -861,7 +861,6 @@
 								"api",
 								"friends",
 								"get-friends",
-								":userId"
 							],
 							"query": [
 								{
@@ -871,12 +870,6 @@
 								{
 									"key": "limit",
 									"value": "10"
-								}
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": ""
 								}
 							]
 						}
@@ -963,6 +956,16 @@
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"accepted\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Respond to pending friend request. Send status in JSON body: accepted|rejected.",
 						"url": {
 							"raw": "{{baseUrl}}/api/friends/response-to-request/:friendId",
 							"host": [

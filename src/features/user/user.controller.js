@@ -17,7 +17,11 @@ export default class UserController {
       res.status(201).send(user);
     } catch (err) {
       console.log(err);
-      res.status(500).json({ error: `Failed to signup: ${err?.message || "Unknown error"}` });
+      res
+        .status(500)
+        .json({
+          error: `Failed to signup: ${err?.message || "Unknown error"}`,
+        });
     }
   }
 
@@ -80,7 +84,11 @@ export default class UserController {
       }
     } catch (err) {
       console.log(err);
-      res.status(500).json({ error: `Failed to signin: ${err?.message || "Unknown error"}` });
+      res
+        .status(500)
+        .json({
+          error: `Failed to signin: ${err?.message || "Unknown error"}`,
+        });
     }
   }
 
@@ -94,7 +102,10 @@ export default class UserController {
     }
 
     try {
-      const decoded = jwt.verify(refreshToken, process.env.Refresh_Token_JWT_SECRET);
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.Refresh_Token_JWT_SECRET
+      );
       const user = await this.userRepostory.findUserWithToken(
         decoded.userID,
         refreshToken
@@ -113,7 +124,11 @@ export default class UserController {
       res.status(200).json({ accessToken });
     } catch (err) {
       console.log(err);
-      return res.status(400).json({ error: `Invalid refresh token: ${err?.message || "Unknown error"}` });
+      return res
+        .status(400)
+        .json({
+          error: `Invalid refresh token: ${err?.message || "Unknown error"}`,
+        });
     }
   }
 
@@ -143,7 +158,11 @@ export default class UserController {
       res.status(200).send("logout successful");
     } catch (err) {
       console.log(err);
-      res.status(500).json({ error: `Failed to logout: ${err?.message || "Unknown error"}` });
+      res
+        .status(500)
+        .json({
+          error: `Failed to logout: ${err?.message || "Unknown error"}`,
+        });
     }
   }
 
@@ -162,7 +181,13 @@ export default class UserController {
       res.status(400).send("All Device logout successful");
     } catch (err) {
       console.log(err);
-      res.status(500).json({ error: `Failed to logout all devices: ${err?.message || "Unknown error"}` });
+      res
+        .status(500)
+        .json({
+          error: `Failed to logout all devices: ${
+            err?.message || "Unknown error"
+          }`,
+        });
     }
   }
 
@@ -180,7 +205,13 @@ export default class UserController {
       }
     } catch (err) {
       console.log(err);
-      res.status(500).json({ error: `Failed to get user details: ${err?.message || "Unknown error"}` });
+      res
+        .status(500)
+        .json({
+          error: `Failed to get user details: ${
+            err?.message || "Unknown error"
+          }`,
+        });
     }
   }
 
@@ -199,7 +230,11 @@ export default class UserController {
       res.status(200).send(users_details);
     } catch (err) {
       console.log(err);
-      res.status(500).json({ error: `Failed to get all users: ${err?.message || "Unknown error"}` });
+      res
+        .status(500)
+        .json({
+          error: `Failed to get all users: ${err?.message || "Unknown error"}`,
+        });
     }
   }
 
@@ -248,7 +283,13 @@ export default class UserController {
       }
     } catch (err) {
       console.log(err);
-      res.status(500).json({ error: `Failed to update user details: ${err?.message || "Unknown error"}` });
+      res
+        .status(500)
+        .json({
+          error: `Failed to update user details: ${
+            err?.message || "Unknown error"
+          }`,
+        });
     }
   }
 }

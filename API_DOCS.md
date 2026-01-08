@@ -105,10 +105,12 @@ Responses (summary):
 
 | Method | Endpoint | Description | Auth Required | Request Body / Params |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/get-friends/:userId` | Get user's friends | Yes | Param: `userId`, Query: `page`, `limit` |
+| `GET` | `/get-friends` | Get user's friends | Yes | Query: `page`, `limit` |
 | `GET` | `/get-pending-requests` | Get pending requests | Yes | - |
 | `GET` | `/toggle-friendship/:friendId` | Send/Remove friend request | Yes | Param: `friendId` |
 | `GET` | `/response-to-request/:friendId` | Respond to request | Yes | Param: `friendId` |
+Notes:
+- For respond-to-request, send JSON body `{ "status": "accepted" | "rejected" }` even though the method is GET; Express parses JSON bodies globally.
 
 Responses (summary):
 - Get Friends: 200 array; 500 error

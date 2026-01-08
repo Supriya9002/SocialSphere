@@ -1,93 +1,101 @@
 import mongoose from "mongoose";
-import PostSchema from "./post.schema.js"
-import ApplicationError from "./../../error/applicationError.js"
+import PostSchema from "./post.schema.js";
+import ApplicationError from "./../../error/applicationError.js";
 
 //model
 const PostModel = mongoose.model("post", PostSchema);
 
-export default class PostRepository{
-
-    // Add Post
-    async add(post){
-        try{
-            const newPost = new PostModel(post);
-            return await newPost.save();
-        }catch(err){
-            console.log(err);
-            throw new ApplicationError("server error! Try later!!", 500)
-        }
+export default class PostRepository {
+  // Add Post
+  async add(post) {
+    try {
+      const newPost = new PostModel(post);
+      return await newPost.save();
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("server error! Try later!!", 500);
     }
+  }
 
-    // getOne post by id, all user see, this post
-    async getOne(postID){
-        try{
-            return await PostModel.findById(postID)
-        }catch(err){
-            console.log(err);
-            throw new ApplicationError("server error! Try later!!", 500)
-        }
+  // getOne post by id, all user see, this post
+  async getOne(postID) {
+    try {
+      return await PostModel.findById(postID);
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("server error! Try later!!", 500);
     }
+  }
 
-    // get all Posts for user Specific
-    async getPost(userID){
-        try{
-            return await PostModel.find({userId: userID});
-        }catch(err){
-            console.log(err);
-            throw new ApplicationError("server error! Try later!!", 500)
-        }
+  // get all Posts for user Specific
+  async getPost(userID) {
+    try {
+      return await PostModel.find({ userId: userID }).populate(
+        "userId",
+        "name email avatar"
+      );
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("server error! Try later!!", 500);
     }
+  }
 
-    // all user see Posts (can see all others posts)
-    async get_AllPost({ page = 1, limit = 10, search, sort } = {}){
-        try{
-            const skip = (page - 1) * limit;
-            const query = {};
-            
-            // Search
-            if (search) {
-                query.caption = { $regex: search, $options: 'i' };
-            }
+  // all user see Posts (can see all others posts)
+  async get_AllPost({ page = 1, limit = 10, search, sort } = {}) {
+    try {
+      const skip = (page - 1) * limit;
+      const query = {};
 
-            // Sort
-            let sortQuery = {};
-            if (sort) {
-                const field = sort.startsWith('-') ? sort.substring(1) : sort;
-                const order = sort.startsWith('-') ? -1 : 1;
-                sortQuery[field] = order;
-            }
+      // Search
+      if (search) {
+        query.caption = { $regex: search, $options: "i" };
+      }
 
-            return await PostModel.find(query)
-                .sort(sortQuery)
-                .skip(skip)
-                .limit(parseInt(limit));
-        }catch(err){
-            console.log(err);
-            throw new ApplicationError("server error! Try later!!", 500)
-        }
+      // Sort
+      let sortQuery = {};
+      if (sort) {
+        const field = sort.startsWith("-") ? sort.substring(1) : sort;
+        const order = sort.startsWith("-") ? -1 : 1;
+        sortQuery[field] = order;
+      }
+
+      return await PostModel.find(query)
+        .populate("userId", "name email avatar")
+        .sort(sortQuery)
+        .skip(skip)
+        .limit(parseInt(limit));
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("server error! Try later!!", 500);
     }
+  }
 
-    // delete specific Post by user
-    async delete(userID, postID){
-        try{
-            return await PostModel.deleteOne({_id: postID, userId: userID});
-        }catch(err){
-            console.log(err);
-            throw new ApplicationError("server error! Try later!!", 500)
-        }
+  // delete specific Post by user
+  async delete(userID, postID) {
+    try {
+      return await PostModel.deleteOne({ _id: postID, userId: userID });
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("server error! Try later!!", 500);
     }
+  }
 
-    // update specific Post by user
-    async update(userID, postID, updateData){
-        try{
-            return await PostModel.updateMany(
-                { _id: postID, userId: userID },
-                { caption: updateData.caption, imageUrl: updateData.imageUrl, imageKey: updateData.imageKey }
-            )
-        }catch(err){
-            console.log(err);
-            throw new ApplicationError("server error! Try later!!", 500)
+  // update specific Post by user
+  async update(userID, postID, updateData) {
+    try {
+      return await PostModel.updateMany(
+        { _id: postID, userId: userID },
+        {
+          $set: {
+            caption: updateData.caption,
+            imageUrl: updateData.imageUrl,
+            imageKey: updateData.imageKey,
+          },
         }
+      );
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError("server error! Try later!!", 500);
     }
-
+  }
 }

@@ -24,7 +24,9 @@ export default class OtpController{
             res.status(201).send('OTP sent successfully');
         }catch(err){
             console.log(err);
-            throw new ApplicationError("server error! Try later!!", 500);  
+             return res.status(err.statusCode || 500).json({
+        error: err.message || "Internal Server Error",
+      });
         }
     }
 
@@ -41,7 +43,9 @@ export default class OtpController{
             res.status(201).send(result);
         }catch(err){ 
             console.log(err);
-            throw new ApplicationError("server error! Try later!!", 500)
+             return res.status(err.statusCode || 500).json({
+        error: err.message || "Internal Server Error",
+      });
         }
     }
 

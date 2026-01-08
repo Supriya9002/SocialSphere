@@ -8,16 +8,14 @@ export default class PostController {
   }
 
   // Add Post
-  async addPost(req, res) { 
+  async addPost(req, res) {
     try {
       if (!req.file) {
         console.log("No file received in addPost; req.file is undefined");
-        return res
-          .status(400)
-          .send({
-            message:
-              'No file uploaded. Ensure form field name is "imageUrl" and request is multipart/form-data.',
-          });
+        return res.status(400).send({
+          message:
+            'No file uploaded. Ensure form field name is "imageUrl" and request is multipart/form-data.',
+        });
       }
       if (req.file.size > 1 * 1024 * 1024) {
         return res.status(413).send("Image must be 1MB or below");
@@ -33,7 +31,9 @@ export default class PostController {
       res.status(201).send(newpost);
     } catch (err) {
       console.log(err);
-      throw new ApplicationError(`Failed to add post: ${err?.message || "Unknown error"}`, 500);
+      return res.status(err.statusCode || 500).json({
+        error: err.message || "Internal Server Error",
+      });
     }
   }
 
@@ -50,7 +50,9 @@ export default class PostController {
       }
     } catch (err) {
       console.log(err);
-      throw new ApplicationError(`Failed to get post: ${err?.message || "Unknown error"}`, 500);
+      return res.status(err.statusCode || 500).json({
+        error: err.message || "Internal Server Error",
+      });
     }
   }
 
@@ -60,14 +62,16 @@ export default class PostController {
       const userID = req.userID;
       console.log("A LO Userid", userID);
       const posts = await this.postRepository.getPost(userID);
-      if (!posts) {
+      if (posts.length === 0) {
         res.status(404).send("You Can not Create Any Post");
       } else {
         res.status(200).send(posts);
       }
     } catch (err) {
       console.log(err);
-      throw new ApplicationError(`Failed to get user posts: ${err?.message || "Unknown error"}`, 500);
+      return res.status(err.statusCode || 500).json({
+        error: err.message || "Internal Server Error",
+      });
     }
   }
 
@@ -86,7 +90,9 @@ export default class PostController {
       res.status(200).send(allPost);
     } catch (err) {
       console.log(err);
-      throw new ApplicationError(`Failed to get all posts: ${err?.message || "Unknown error"}`, 500);
+      return res.status(err.statusCode || 500).json({
+        error: err.message || "Internal Server Error",
+      });
     }
   }
 
@@ -101,24 +107,32 @@ export default class PostController {
       if (post.imageKey) {
         await s3Service.deleteFile(post.imageKey);
       }
-      const deleteResult = await this.postRepository.delete(userID, req.params.postId);
-      if (deleteResult?.deletedCount > 0) return res.status(200).send("Post Delete");
+      const deleteResult = await this.postRepository.delete(
+        userID,
+        req.params.postId
+      );
+      if (deleteResult?.deletedCount > 0)
+        return res.status(200).send("Post Delete");
       return res.status(404).send("Not found Post");
     } catch (err) {
       console.log(err);
-      throw new ApplicationError(`Failed to delete post: ${err?.message || "Unknown error"}`, 500);
+      return res.status(err.statusCode || 500).json({
+        error: err.message || "Internal Server Error",
+      });
     }
   }
 
   // update specific Post by user
-  async updatePost(req, res) {
+  async updatePost(req, res, next) {
     try {
       const userID = req.userID;
       if (req.file) {
         if (req.file.size > 1 * 1024 * 1024) {
           return res.status(413).send("Image must be 1MB or below");
         }
+        console.log("postId ..", req.params.postId);
         const existing = await this.postRepository.getOne(req.params.postId);
+        console.log("existing ..", existing);
         if (!existing || String(existing.userId) !== String(userID)) {
           return res.status(404).send("Post Not found");
         }
@@ -134,14 +148,18 @@ export default class PostController {
         req.params.postId,
         req.body
       );
+      console.log("updatePost", updatePost);
       if (updatePost) {
         res.status(200).send("Post Updated");
       } else {
         res.status(404).send("Post Not found");
       }
     } catch (err) {
-      console.log(err);
-      throw new ApplicationError(`Failed to update post: ${err?.message || "Unknown error"}`, 500);
+      // console.log("err.statusCode", err.statusCode);
+      // return res.status(err.statusCode || 500).json({
+      //   error: err.message || "Internal Server Error",
+      // });
+      next(err);
     }
   }
 }
